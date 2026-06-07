@@ -23,6 +23,10 @@ MusicBee groups albums by Album Artist and Album name. Compilation albums and sp
 
 Supports MP3 and FLAC.
 
+## Screenshots
+
+![MusicBee Compilation Tagger](screenshots/01.png)
+
 ## Setup
 
 **Prerequisites**
@@ -41,10 +45,6 @@ pip install -r requirements.txt
 ```
 python tagger.py
 ```
-
-## Screenshots
-
-*(add screenshot here after first run)*
 
 ## Notes
 
