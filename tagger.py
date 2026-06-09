@@ -1,8 +1,13 @@
 import os
 import tkinter as tk
+import tkinter as tk
 from tkinter import filedialog, scrolledtext
 from mutagen.flac import FLAC
 from mutagen.id3 import ID3, TPE2, TALB
+from mutagen.wave import WAVE
+from mutagen.oggvorbis import OggVorbis
+from mutagen.oggopus import OggOpus
+from mutagen.mp4 import MP4
 
 
 def get_album_artist(folder_path):
@@ -75,6 +80,35 @@ def run_tagger():
                 audio.save()
                 log("  [OK] " + f)
                 tagged += 1
+
+            elif ext in ("wav", "aif", "aiff"):
+                audio = WAVE(path)
+                if audio.tags is None:
+                    audio.add_tags()
+                audio.tags.setall("TPE2", [TPE2(encoding=3, text=album_artist)])
+                audio.tags.setall("TALB", [TALB(encoding=3, text=album_name)])
+                audio.save()
+                log("  [OK] " + f)
+                tagged += 1
+
+            elif ext in ("ogg", "opus"):
+                audio = OggVorbis(path) if ext == "ogg" else OggOpus(path)
+                audio["albumartist"] = [album_artist]
+                audio["album"] = [album_name]
+                audio.save()
+                log("  [OK] " + f)
+                tagged += 1
+
+            elif ext == "m4a":
+                audio = MP4(path)
+                audio["aART"] = [album_artist]
+                audio["\xa9alb"] = [album_name]
+                audio.save()
+                log("  [OK] " + f)
+                tagged += 1
+
+            else:
+                continue
 
         except Exception as e:
             log("  [FAIL] " + f + " - " + str(e))
